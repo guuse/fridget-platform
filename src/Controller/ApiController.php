@@ -40,7 +40,11 @@ final class ApiController extends AbstractController
     public function findAllUsersAction(): JsonResponse
     {
         $users = $this->em->getRepository(User::class)->findBy([], ['id' => 'DESC']);
-        $data = $this->serializer->serialize($users, JsonEncoder::FORMAT);
+        $data = $this->serializer->serialize($users, JsonEncoder::FORMAT, [
+            'circular_reference_handler' => function ($object) {
+                return $object->getId();
+            }]
+        );
 
         return new JsonResponse($data, Response::HTTP_OK, [], true);
     }
