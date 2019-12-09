@@ -62,7 +62,7 @@ class User implements UserInterface
      *
      * @var string[]
      */
-    private $roles = [];
+    private $roles = [''];
 
     /**
      * @ORM\OneToMany(targetEntity="App\Entity\Box", mappedBy="user", orphanRemoval=true)
