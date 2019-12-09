@@ -17,6 +17,8 @@ final class ProductsFixtures extends Fixture implements DependentFixtureInterfac
     /** @var EntityManagerInterface */
     private $em;
 
+    private $prods;
+
     public function getDependencies()
     {
         return array(
@@ -27,6 +29,19 @@ final class ProductsFixtures extends Fixture implements DependentFixtureInterfac
     public function __construct(EntityManagerInterface $em)
     {
         $this->em = $em;
+        $this->prods =  array(
+            'Melk',
+            'Kip',
+            'Taart',
+            'Fruitsap',
+            'Brood',
+            'Kaas',
+            'Basilicum',
+            'Asperges',
+            'Appel',
+            'Diepvries pizza',
+            'Eieren'
+        );
     }
 
     public function load(ObjectManager $manager): void
@@ -35,7 +50,8 @@ final class ProductsFixtures extends Fixture implements DependentFixtureInterfac
         $boxes = $user->getBox();
 
         foreach ($boxes as $box) {
-            for ($i = 0; $i < 10; $i++) {
+            $max = rand(4,10);
+            for ($i = 0; $i < $max; $i++) {
                 $this->createProduct($manager, $box, $i);
             }
         }
@@ -47,10 +63,13 @@ final class ProductsFixtures extends Fixture implements DependentFixtureInterfac
      */
     private function createProduct(ObjectManager $manager, $box, $number): void
     {
+        $arrayShuffled = $this->prods;
+        shuffle($arrayShuffled);
+        $name = $arrayShuffled[$number];
         $date = new \DateTime(sprintf('+%s day', rand(3,5)));
         $productEntity = new Products();
-        $productEntity->setName(sprintf('Product #%s', $number));
-        $productEntity->setDescription(sprintf('Description of product #%s', $number));
+        $productEntity->setName($name);
+        $productEntity->setDescription(sprintf('Description of product %s', $name));
         $productEntity->setAmount(rand(1, 5));
         $productEntity->setBox($box);
         $productEntity->setExpires($date);

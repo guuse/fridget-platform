@@ -88,6 +88,13 @@ class Products
         return $this;
     }
 
+    public function getExpiresIn(): string
+    {
+        $current_date = new \DateTime();
+        $diff = $current_date->diff($this->expires);
+        return (string)$diff->format('%R%a');
+    }
+
     public function getAmount(): ?int
     {
         return $this->amount;

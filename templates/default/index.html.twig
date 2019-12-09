@@ -3,18 +3,68 @@
 {% block title %}Hello DefaultController!{% endblock %}
 
 {% block body %}
-<style>
-    .example-wrapper { margin: 1em auto; max-width: 800px; width: 95%; font: 18px/1.5 sans-serif; }
-    .example-wrapper code { background: #F5F5F5; padding: 2px 6px; }
-</style>
+    <style>
+        .example-wrapper {
+            margin: 1em auto;
+            max-width: 800px;
+            width: 95%;
+            font: 18px/1.5 sans-serif;
+        }
 
-<div class="example-wrapper">
-    <h1>Hello {{ controller_name }}! ✅</h1>
+        .example-wrapper code {
+            background: #F5F5F5;
+            padding: 2px 6px;
+        }
 
-    This friendly message is coming from:
-    <ul>
-        <li>Your controller at <code><a href="{{ '/app/src/Controller/DefaultController.php'|file_link(0) }}">src/Controller/DefaultController.php</a></code></li>
-        <li>Your template at <code><a href="{{ '/app/templates/default/index.html.twig'|file_link(0) }}">templates/default/index.html.twig</a></code></li>
-    </ul>
-</div>
+        .product {
+            background-color: rgba(0, 0, 0, .1);
+            padding: 5px;
+            margin: 10px;
+        }
+
+        table {
+            font-family: arial, sans-serif;
+            border-collapse: collapse;
+            width: 100%;
+        }
+
+        td, th {
+            border: 1px solid #dddddd;
+            text-align: left;
+            padding: 8px;
+        }
+
+        tr:nth-child(even) {
+            background-color: #dddddd;
+        }
+
+    </style>
+
+    <div class="example-wrapper">
+        <h1>Hello {{ user.name }}! ✅</h1>
+        {% for box in user.box %}
+            {% set num = 1 %}
+            <h2>{{ box.name }}:</h2>
+            {% for product in box.products %}
+                <div class="product">
+                    <h4>{{ product.name }}: </h4>
+                    <p>{{ product.description }}</p>
+                    <table>
+                        <tr>
+                            <th>Houdbaarheid</th>
+                            <th>Hoeveelheid</th>
+                            <th>Eenheid</th>
+                        </tr>
+                        <tr>
+                            <td>{{ product.ExpiresIn|replace({'+': ''}) }} dagen</td>
+                            <td>{{ product.amount }}</td>
+                            <td>{{ product.unit }}</td>
+                        </tr>
+                    </table>
+                    {% set num = num + 1 %}
+
+                </div>
+            {% endfor %}
+        {% endfor %}
+    </div>
 {% endblock %}
