@@ -87,29 +87,32 @@ final class ApiController extends AbstractController
      */
     public function createProductAction(Request $request): JsonResponse
     {
-        $name = $request->request->get('name');
-        $desc = $request->request->get('desc');
-        $amount = $request->request->get('amount');
-        $expires = $request->request->get('expires');
-        $unit = $request->request->get('unit');
+        $box = $this->em->getRepository(Box::class)->findOneBy(array('id' => $request->request->get('box')));
+        $products = $request->request->get('products');
 
-        if (empty($name) || empty($amount) || empty($expires)) {
-            throw new BadRequestHttpException('Can\'t find name, amount or expires in the body');
+        foreach ($products as $product) {
+            $name = $product['name'];
+            $desc = $product['desc'];
+            $amount = $product['amount'];
+            $expires = $product['expires'];
+            $unit = $product['unit'];
+
+            if (empty($name) || empty($amount) || empty($expires)) {
+                throw new BadRequestHttpException('Can\'t find name, amount or expires in the body');
+            }
+
+            $productEntity = new Products();
+            $productEntity->setName($name);
+            $productEntity->setDescription($desc);
+            $productEntity->setAmount($amount);
+            $productEntity->setBox($box);
+            $productEntity->setExpires(new \DateTime($expires));
+            $productEntity->setUnit($unit);
+            $this->em->persist($productEntity);
         }
 
-        $user = $this->em->getRepository(User::class)->findOneBy(array('email' => 'admin@admin.com'));
-        $box = $user->getBox()[1];
-
-        $productEntity = new Products();
-        $productEntity->setName($name);
-        $productEntity->setDescription($desc);
-        $productEntity->setAmount($amount);
-        $productEntity->setBox($box);
-        $productEntity->setExpires(new \DateTime($expires));
-        $productEntity->setUnit($unit);
-        $this->em->persist($productEntity);
         $this->em->flush();
-        $data = $this->serializer->serialize($productEntity, JsonEncoder::FORMAT, [
+        $data = $this->serializer->serialize($box, JsonEncoder::FORMAT, [
             'circular_reference_handler' => function ($object) {
                 return $object->getId();
             }]
