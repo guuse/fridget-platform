@@ -41,9 +41,9 @@ final class ApiController extends AbstractController
     {
         $users = $this->em->getRepository(User::class)->findBy([], ['id' => 'DESC']);
         $data = $this->serializer->serialize($users, JsonEncoder::FORMAT, [
-            'circular_reference_handler' => function ($object) {
-                return $object->getId();
-            }]
+                'circular_reference_handler' => function ($object) {
+                    return $object->getId();
+                }]
         );
 
         return new JsonResponse($data, Response::HTTP_OK, [], true);
@@ -56,9 +56,9 @@ final class ApiController extends AbstractController
     {
         $boxes = $this->em->getRepository(Box::class)->findBy([], ['id' => 'DESC']);
         $data = $this->serializer->serialize($boxes, JsonEncoder::FORMAT, [
-            'circular_reference_handler' => function ($object) {
-                return $object->getId();
-            }]
+                'circular_reference_handler' => function ($object) {
+                    return $object->getId();
+                }]
         );
 
         return new JsonResponse($data, Response::HTTP_OK, [], true);
@@ -71,11 +71,68 @@ final class ApiController extends AbstractController
     {
         $products = $this->em->getRepository(Products::class)->findBy([], ['id' => 'DESC']);
         $data = $this->serializer->serialize($products, JsonEncoder::FORMAT, [
+                'circular_reference_handler' => function ($object) {
+                    return $object->getId();
+                }]
+        );
+
+        return new JsonResponse($data, Response::HTTP_OK, [], true);
+    }
+
+    /**
+     * @throws BadRequestHttpException
+     * @throws \Exception
+     *
+     * @Rest\Post("/add/product", name="createProduct")
+     */
+    public function createProductAction(Request $request): JsonResponse
+    {
+        $name = $request->request->get('name');
+        $desc = $request->request->get('desc');
+        $amount = $request->request->get('amount');
+        $expires = $request->request->get('expires');
+        $unit = $request->request->get('unit');
+
+        if (empty($name) || empty($amount) || empty($expires)) {
+            throw new BadRequestHttpException('Can\'t find name, amount or expires in the body');
+        }
+
+        $user = $this->em->getRepository(User::class)->findOneBy(array('email' => 'admin@admin.com'));
+        $box = $user->getBox()[1];
+
+        $productEntity = new Products();
+        $productEntity->setName($name);
+        $productEntity->setDescription($desc);
+        $productEntity->setAmount($amount);
+        $productEntity->setBox($box);
+        $productEntity->setExpires(new \DateTime($expires));
+        $productEntity->setUnit($unit);
+        $this->em->persist($productEntity);
+        $this->em->flush();
+        $data = $this->serializer->serialize($productEntity, JsonEncoder::FORMAT, [
             'circular_reference_handler' => function ($object) {
                 return $object->getId();
             }]
         );
 
-        return new JsonResponse($data, Response::HTTP_OK, [], true);
+        return new JsonResponse($data, Response::HTTP_CREATED, [], true);
+    }
+
+    /**
+     * @throws BadRequestHttpException
+     * @throws \Exception
+     *
+     * @Rest\Delete("/remove/product/{id}", name="deleteProduct")
+     */
+    public function deleteProductAction(Request $request, $id): JsonResponse
+    {
+        $product = $this->em->getRepository(Products::class)->findOneBy(array('id' => $id));
+        if (empty($product)) {
+            throw new BadRequestHttpException(sprintf('Can\'t find product with id %s.', $id));
+        }
+        $this->em->remove($product);
+        $this->em->flush();
+
+        return new JsonResponse('Product deleted succesfully', Response::HTTP_NO_CONTENT, [], true);
     }
 }

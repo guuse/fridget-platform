@@ -22,7 +22,7 @@ class UserRepository extends ServiceEntityRepository
     /*
      * @throws NonUniqueResultException If the query result is not unique.
      */
-    public function findOneBySEmail($email): ?User
+    public function findOneByEmail($email): ?User
     {
         return $this->createQueryBuilder('u')
             ->andWhere('u.email = :email')

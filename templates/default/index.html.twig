@@ -61,8 +61,11 @@
                             <td>{{ product.unit }}</td>
                         </tr>
                     </table>
+                    <form action="/api/remove/product/{{ product.id }}" method="post">
+                        <input type="hidden" name="_method" value="DELETE" />
+                        <input type="submit" value="Delete"/>
+                    </form>
                     {% set num = num + 1 %}
-
                 </div>
             {% endfor %}
         {% endfor %}

@@ -91,6 +91,7 @@ class Products
     public function getExpiresIn(): string
     {
         $current_date = new \DateTime();
+        $current_date->add(\DateInterval::createFromDateString('yesterday'));
         $diff = $current_date->diff($this->expires);
         return (string)$diff->format('%R%a');
     }
