@@ -96,6 +96,7 @@ final class ApiController extends AbstractController
             $amount = $product['amount'];
             $expires = $product['expires'];
             $unit = $product['unit'];
+            $category = $product['category'];
 
             if (empty($name) || empty($amount) || empty($expires)) {
                 throw new BadRequestHttpException('Can\'t find name, amount or expires in the body');
@@ -108,6 +109,7 @@ final class ApiController extends AbstractController
             $productEntity->setBox($box);
             $productEntity->setExpires(new \DateTime($expires));
             $productEntity->setUnit($unit);
+            $productEntity->setCategory($category);
             $this->em->persist($productEntity);
         }
 
