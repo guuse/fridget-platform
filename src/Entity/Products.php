@@ -47,6 +47,11 @@ class Products
      */
     private $box;
 
+    /**
+     * @ORM\Column(type="string", length=255)
+     */
+    private $category;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -128,6 +133,18 @@ class Products
     public function setBox(?Box $box): self
     {
         $this->box = $box;
+
+        return $this;
+    }
+
+    public function getCategory(): ?string
+    {
+        return $this->category;
+    }
+
+    public function setCategory(string $category): self
+    {
+        $this->category = $category;
 
         return $this;
     }

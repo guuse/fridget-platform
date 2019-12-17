@@ -74,6 +74,7 @@ final class ProductsFixtures extends Fixture implements DependentFixtureInterfac
         $productEntity->setBox($box);
         $productEntity->setExpires($date);
         $productEntity->setUnit('100 gram');
+        $productEntity->setCategory('Overig');
         $manager->persist($productEntity);
         $manager->flush();
     }
