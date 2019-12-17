@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Controller;
 
 use App\Entity\Box;
+use App\Entity\Ean;
 use App\Entity\Products;
 use App\Entity\User;
 use Doctrine\ORM\EntityManagerInterface;
@@ -41,6 +42,21 @@ final class ApiController extends AbstractController
     {
         $users = $this->em->getRepository(User::class)->findBy([], ['id' => 'DESC']);
         $data = $this->serializer->serialize($users, JsonEncoder::FORMAT, [
+                'circular_reference_handler' => function ($object) {
+                    return $object->getId();
+                }]
+        );
+
+        return new JsonResponse($data, Response::HTTP_OK, [], true);
+    }
+
+    /**
+     * @Rest\Get("/ean/{ean}", name="findEanProductInfo")
+     */
+    public function findEanProduct($ean): JsonResponse
+    {
+        $productInfo = $this->em->getRepository(Ean::class)->findOneBy(array('ean' => $ean));
+        $data = $this->serializer->serialize($productInfo, JsonEncoder::FORMAT, [
                 'circular_reference_handler' => function ($object) {
                     return $object->getId();
                 }]
