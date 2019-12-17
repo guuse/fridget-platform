@@ -66,12 +66,13 @@ final class ApiController extends AbstractController
     }
 
     /**
-     * @Rest\Get("/boxes", name="findAllBoxes")
+     * @Rest\Get("/{uuid}/boxes", name="findAllBoxes")
      */
-    public function findAllBoxesAction(): JsonResponse
+    public function findAllBoxesAction($uuid): JsonResponse
     {
-        $boxes = $this->em->getRepository(Box::class)->findBy([], ['id' => 'DESC']);
-        $data = $this->serializer->serialize($boxes, JsonEncoder::FORMAT, [
+        $boxes = $this->em->getRepository(Box::class)->findBy(['user' => $uuid], ['id' => 'DESC']);
+
+        $data = $this->serializer->serialize($boxes , JsonEncoder::FORMAT, [
                 'circular_reference_handler' => function ($object) {
                     return $object->getId();
                 }]
@@ -81,11 +82,11 @@ final class ApiController extends AbstractController
     }
 
     /**
-     * @Rest\Get("/products", name="findAllProducts")
+     * @Rest\Get("/{boxId}/products", name="findAllProducts")
      */
-    public function findAllProductsAction(): JsonResponse
+    public function findAllProductsAction($boxId): JsonResponse
     {
-        $products = $this->em->getRepository(Products::class)->findBy([], ['id' => 'DESC']);
+        $products = $this->em->getRepository(Products::class)->findBy(['box' => $boxId], ['id' => 'DESC']);
         $data = $this->serializer->serialize($products, JsonEncoder::FORMAT, [
                 'circular_reference_handler' => function ($object) {
                     return $object->getId();
