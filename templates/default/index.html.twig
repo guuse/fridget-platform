@@ -1,4 +1,5 @@
 {% extends 'base.html.twig' %}
+{% import "utils/utils.html.twig" as utils %}
 
 {% block title %}Hello DefaultController!{% endblock %}
 
@@ -38,6 +39,11 @@
             background-color: #dddddd;
         }
 
+        .expired ,
+        .expired tr{
+            background-color: rgba(255,0,0,.5);
+        }
+
     </style>
 
     <div class="example-wrapper">
@@ -46,7 +52,7 @@
             {% set num = 1 %}
             <h2>{{ box.name }}:</h2>
             {% for product in box.products %}
-                <div class="product">
+                <div class="product {{ utils.is_expired(product.ExpiresIn) }}">
                     <h4>{{ product.name }}: </h4>
                     <p>{{ product.description }}</p>
                     <table>
@@ -56,7 +62,7 @@
                             <th>Eenheid</th>
                         </tr>
                         <tr>
-                            <td>{{ product.ExpiresIn|replace({'+': ''}) }} dagen</td>
+                            <td>{{ product.ExpiresIn }} dagen</td>
                             <td>{{ product.amount }}</td>
                             <td>{{ product.unit }}</td>
                         </tr>
