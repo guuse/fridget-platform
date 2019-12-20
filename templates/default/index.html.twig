@@ -1,7 +1,18 @@
-{% extends 'base.html.twig' %}
 {% import "utils/utils.html.twig" as utils %}
 
-{% block title %}Hello DefaultController!{% endblock %}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %}Fridget{% endblock %}</title>
+    {{ encore_entry_link_tags('app') }}
+</head>
+<body>
+    {{ encore_entry_script_tags('app') }}
+    {{ encore_entry_script_tags('vue') }}
+    </body>
+</html>
+
 
 {% block body %}
     <style>
@@ -47,7 +58,7 @@
     </style>
 
     <div class="example-wrapper">
-        <h1>Hello {{ user.name }}! ✅</h1>
+        <h1>Old non-vue testview 🤮</h1>
         {% for box in user.box %}
             {% set num = 1 %}
             <h2>{{ box.name }}:</h2>
@@ -76,4 +87,6 @@
             {% endfor %}
         {% endfor %}
     </div>
+    {{ encore_entry_script_tags('app') }}
+    {{ encore_entry_script_tags('vue') }}
 {% endblock %}
