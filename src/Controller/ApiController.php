@@ -16,6 +16,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\Serializer\Encoder\JsonEncoder;
+use Symfony\Component\Serializer\Normalizer\AbstractNormalizer;
 use Symfony\Component\Serializer\SerializerInterface;
 
 /**
@@ -72,10 +73,12 @@ final class ApiController extends AbstractController
     {
         $boxes = $this->em->getRepository(Box::class)->findBy(['user' => $uuid], ['id' => 'DESC']);
 
-        $data = $this->serializer->serialize($boxes , JsonEncoder::FORMAT, [
+        $data = $this->serializer->serialize($boxes, JsonEncoder::FORMAT, [
+                AbstractNormalizer::IGNORED_ATTRIBUTES => ['user', 'products'],
                 'circular_reference_handler' => function ($object) {
                     return $object->getId();
-                }]
+                }
+            ]
         );
 
         return new JsonResponse($data, Response::HTTP_OK, [], true);
@@ -88,9 +91,11 @@ final class ApiController extends AbstractController
     {
         $products = $this->em->getRepository(Products::class)->findBy(['box' => $boxId], ['id' => 'DESC']);
         $data = $this->serializer->serialize($products, JsonEncoder::FORMAT, [
+                AbstractNormalizer::IGNORED_ATTRIBUTES => ['box'],
                 'circular_reference_handler' => function ($object) {
                     return $object->getId();
-                }]
+                }
+            ]
         );
 
         return new JsonResponse($data, Response::HTTP_OK, [], true);
@@ -131,10 +136,11 @@ final class ApiController extends AbstractController
         }
 
         $this->em->flush();
-        $data = $this->serializer->serialize($box, JsonEncoder::FORMAT, [
-            'circular_reference_handler' => function ($object) {
-                return $object->getId();
-            }]
+        $data = $this->serializer->serialize($productEntity, JsonEncoder::FORMAT, [
+                AbstractNormalizer::IGNORED_ATTRIBUTES => ['box'],
+                'circular_reference_handler' => function ($object) {
+                    return $object->getId();
+                }]
         );
 
         return new JsonResponse($data, Response::HTTP_CREATED, [], true);
