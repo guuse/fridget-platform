@@ -97,6 +97,9 @@ class Products
     {
         $current_date = new \DateTime();
         $diff = $current_date->diff($this->expires);
+        if ($diff->format('%a') == 0 && $diff->format('%R') == '+') {
+            return '+1';
+        }
         return $diff->format('%R%a');
     }
 

@@ -89,7 +89,7 @@ final class ApiController extends AbstractController
      */
     public function findAllProductsAction($boxId): JsonResponse
     {
-        $products = $this->em->getRepository(Products::class)->findBy(['box' => $boxId], ['id' => 'DESC']);
+        $products = $this->em->getRepository(Products::class)->findBy(['box' => $boxId], ['expires' => 'ASC']);
         $data = $this->serializer->serialize($products, JsonEncoder::FORMAT, [
                 AbstractNormalizer::IGNORED_ATTRIBUTES => ['box'],
                 'circular_reference_handler' => function ($object) {
