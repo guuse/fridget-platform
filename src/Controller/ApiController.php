@@ -163,4 +163,32 @@ final class ApiController extends AbstractController
 
         return new JsonResponse('Product deleted succesfully', Response::HTTP_NO_CONTENT, [], true);
     }
+
+    /**
+     *
+     * @throws BadRequestHttpException
+     * @throws \Exception
+     *
+     * @Rest\Put("/update/{id}", name="updateProduct")
+     */
+    public function updateProductAction(Request $request, $id): JsonResponse
+    {
+        $product = $this->em->getRepository(Products::class)->findOneBy(array('id' => $id));
+        $amount = $request->request->get('amount');
+        if (empty($amount) || $amount < 1) {
+            throw new BadRequestHttpException('Amount is missing or invalid');
+        }
+        $product->setAmount($amount);
+        $this->em->persist($product);
+        $this->em->flush();
+
+        $data = $this->serializer->serialize($product, JsonEncoder::FORMAT, [
+                AbstractNormalizer::IGNORED_ATTRIBUTES => ['box'],
+                'circular_reference_handler' => function ($object) {
+                    return $object->getId();
+                }]
+        );
+
+        return new JsonResponse($data, Response::HTTP_OK, [], true);
+    }
 }
