@@ -30,6 +30,7 @@ class Box
 
     /**
      * @ORM\OneToMany(targetEntity="App\Entity\Products", mappedBy="box", orphanRemoval=true)
+     * @ORM\OrderBy({"expires" = "ASC"})
      */
     private $products;
 

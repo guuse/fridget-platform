@@ -137,7 +137,7 @@ final class ApiController extends AbstractController
 
         $this->em->flush();
         $data = $this->serializer->serialize($box, JsonEncoder::FORMAT, [
-                AbstractNormalizer::IGNORED_ATTRIBUTES => ['user','id','name','description'],
+                AbstractNormalizer::IGNORED_ATTRIBUTES => ['user'],
                 'circular_reference_handler' => function ($object) {
                     return $object->getId();
                 }]
