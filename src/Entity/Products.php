@@ -83,7 +83,11 @@ class Products
 
     public function getExpires(): ?\DateTimeInterface
     {
-        return $this->expires;
+        $expire_unix = strtotime("today", $this->expires->getTimestamp());
+        $expire_date = new \DateTime();
+        $expire_date->setTimestamp($expire_unix);
+
+        return $expire_date;
     }
 
     public function setExpires(\DateTimeInterface $expires): self
@@ -95,11 +99,12 @@ class Products
 
     public function getExpiresIn(): int
     {
+        $current_unix = strtotime("today");;
+
         $current_date = new \DateTime();
-        $diff = $current_date->diff($this->expires);
-        if ($diff->format('%a') == 0 && $diff->format('%R') == '+') {
-            return '+1';
-        }
+        $current_date->setTimestamp($current_unix);
+
+        $diff = $current_date->diff($this->getExpires());
         return $diff->format('%R%a');
     }
 

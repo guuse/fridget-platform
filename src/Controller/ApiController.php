@@ -116,7 +116,7 @@ final class ApiController extends AbstractController
             $name = $product['name'];
             $desc = $product['desc'];
             $amount = $product['amount'];
-            $expires = $product['expires'];
+            $expires = $product['expires'] . ' days';
             $unit = $product['unit'];
             $category = $product['category'];
 
