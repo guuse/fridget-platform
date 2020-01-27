@@ -26,27 +26,27 @@ final class SecurityController extends AbstractController
         $this->serializer = $serializer;
     }
 
-    /**
-     * @Route("/security/login", name="login")
-     */
-    public function loginAction(): JsonResponse
-    {
-        /** @var User $user */
-        $user = $this->getUser();
-        $userClone = clone $user;
-        $userClone->setPassword('');
-        $data = $this->serializer->serialize($userClone, JsonEncoder::FORMAT);
-
-        return new JsonResponse($data, Response::HTTP_OK, [], true);
-    }
-
-    /**
-     * @throws RuntimeException
-     *
-     * @Route("/security/logout", name="logout")
-     */
-    public function logoutAction(): void
-    {
-        throw new RuntimeException('This should not be reached!');
-    }
+//    /**
+//     * @Route("/security/login", name="login")
+//     */
+//    public function loginAction(): JsonResponse
+//    {
+//        /** @var User $user */
+//        $user = $this->getUser();
+//        $userClone = clone $user;
+//        $userClone->setPassword('');
+//        $data = $this->serializer->serialize($userClone, JsonEncoder::FORMAT);
+//
+//        return new JsonResponse($data, Response::HTTP_OK, [], true);
+//    }
+//
+//    /**
+//     * @throws RuntimeException
+//     *
+//     * @Route("/security/logout", name="logout")
+//     */
+//    public function logoutAction(): void
+//    {
+//        throw new RuntimeException('This should not be reached!');
+//    }
 }
